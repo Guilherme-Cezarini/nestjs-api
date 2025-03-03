@@ -4,7 +4,7 @@ import { BeforeInsert } from 'typeorm'
 import { User } from '../../users/entities/user.entity';
 import { Compaign } from "src/compaigns/entities/compaign.entity";
  
-@Entity()
+@Entity('companies')
 export class Company {
   @PrimaryColumn()
   id: string 

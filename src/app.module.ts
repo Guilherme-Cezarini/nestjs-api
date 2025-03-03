@@ -26,11 +26,7 @@ import { Company } from './companies/entities/company.entity';
         username: configService.get<string>('POSTGRE_DB_USERNAME', ""),
         password: configService.get<string>('POSTGRE_DB_PASSWORD', ""),
         database: configService.get<string>('POSTGRE_DB_DATABASE', ""),
-        entities: [User, Compaign, Company],
-        migrations: ['src/migrations/*.ts'],
-        cli: {
-          migrationsDir: 'src/migrations',
-        },  
+        entities: [User, Compaign, Company], 
         synchronize: configService.get<boolean>('POSTGRE_DB_SYNCHRONIZE', true),
       })
     }),

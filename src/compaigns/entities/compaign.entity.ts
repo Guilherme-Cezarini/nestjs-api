@@ -4,16 +4,13 @@ import { BeforeInsert } from 'typeorm';
 import { Company } from '../../companies/entities/company.entity';
 
 
-@Entity()
+@Entity('campaigns')
 export class Compaign {
   @PrimaryColumn()
   id: string 
 
   @Column()
   name: string
-
-  @Column()
-  company_id: string
 
   @CreateDateColumn()
   created_at: Date;
@@ -24,6 +21,10 @@ export class Compaign {
   @ManyToOne(() => Company, (company) => company.compaigns)
   @JoinColumn({ name: 'company_id' })
   company: Company[];
+
+  @Column()
+  company_id: string
+  
 
   @BeforeInsert()
   generateId() {

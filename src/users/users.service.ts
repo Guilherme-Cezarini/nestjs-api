@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -13,7 +14,8 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
+    const newUser = this.userRepository.create(createUserDto);
+    return this.userRepository.save(newUser);
   }
 
   findAll() {

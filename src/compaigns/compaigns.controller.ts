@@ -19,16 +19,16 @@ export class CompaignsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.compaignsService.findOne(+id);
+    return this.compaignsService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCompaignDto: UpdateCompaignDto) {
-    return this.compaignsService.update(+id, updateCompaignDto);
+    return this.compaignsService.update(id, updateCompaignDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.compaignsService.remove(+id);
+    return this.compaignsService.remove(id);
   }
 }

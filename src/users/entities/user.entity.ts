@@ -4,7 +4,7 @@ import { Company } from '../../companies/entities/company.entity';
 import { BeforeInsert } from 'typeorm';
 
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryColumn()
   id: string;
@@ -13,12 +13,14 @@ export class User {
   email: string; 
 
   @Column()
-  //@IsNotEmpty()
   password: string; 
 
-  @ManyToOne(() => Company, (company) => company.users)
+  @ManyToOne(() => Company, (company) => company.users, { nullable: false })
   @JoinColumn({ name: 'company_id' })
   company: Company;
+
+  @Column()
+  company_id: string; 
 
   @CreateDateColumn()
   created_at: Date;
