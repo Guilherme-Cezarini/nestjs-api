@@ -30,7 +30,7 @@ export class CompaignsService {
     return this.campaignRepository.findOne({ where: { id } }); 
   }
 
-  remove(id: string) {
-    return this.campaignRepository.delete(id);
+  async remove(id: string) {
+    await this.campaignRepository.delete(id);
   }
 }

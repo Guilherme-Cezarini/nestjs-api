@@ -10,5 +10,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     
     @IsNotEmpty()
     @MaxLength(12)
-    password: string;     
+    password: string;    
+    
+    @IsNotEmpty()
+    company_id: string
 }

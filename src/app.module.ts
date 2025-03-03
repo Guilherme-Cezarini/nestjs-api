@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/entities/user.entity';
 import { Compaign } from './compaigns/entities/compaign.entity';
 import { Company } from './companies/entities/company.entity';
+import { LoginModule } from './login/login.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { Company } from './companies/entities/company.entity';
     CompaniesModule,
     UsersModule,
     CompaignsModule,
+    LoginModule,
   ],
   controllers: [AppController],
   providers: [AppService, IdGeneratorService],

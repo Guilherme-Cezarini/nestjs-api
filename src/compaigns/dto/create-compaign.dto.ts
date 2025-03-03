@@ -1,1 +1,6 @@
-export class CreateCompaignDto {}
+import { IsNotEmpty } from 'class-validator';
+
+export class CreateCompaignDto {
+    @IsNotEmpty()
+    name: string; 
+}
