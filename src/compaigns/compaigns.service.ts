@@ -4,21 +4,42 @@ import { UpdateCompaignDto } from './dto/update-compaign.dto';
 import { Compaign } from './entities/compaign.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { RabbitMQService } from './rabbitmq.service';
+import { Request } from 'express';
+import { User } from 'src/users/entities/user.entity';
+import { Pagination, IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+
 
 @Injectable()
 export class CompaignsService {
   constructor(
     @InjectRepository(Compaign)
     private campaignRepository: Repository<Compaign>,
+    private readonly rabbitMQService: RabbitMQService,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>
   ) {}
 
-  create(createCompaignDto: CreateCompaignDto) {
-    const newCampaign = this.campaignRepository.create(createCompaignDto);
-    return this.campaignRepository.save(newCampaign);
+  async create(
+    createCompaignDto: CreateCompaignDto,
+    file: Express.Multer.File,
+    request: Request
+  ) {
+    const userId = request.user!['sub'];
+    const user = await this.userRepository.findOne({ where: { id: userId }});
+    
+    const newCampaign = this.campaignRepository.create({
+      ...createCompaignDto, 
+      company_id: user?.company_id,
+    });
+    const campaign = await this.campaignRepository.save(newCampaign);
+    const filePath = file.path;
+    await this.rabbitMQService.processFileAndSendToQueue(filePath, process.env.RABBITMQ_QUEUE || "", campaign);
+    return campaign;
   }
-
-  findAll() {
-    return this.campaignRepository.find();
+  
+  async paginate(options: IPaginationOptions): Promise<Pagination<Compaign>> {
+    return paginate<Compaign>(this.campaignRepository, options);
   }
 
   findOne(id: string) {

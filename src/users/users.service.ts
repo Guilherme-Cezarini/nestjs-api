@@ -7,6 +7,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from '../companies/entities/company.entity';
 import * as bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
+import { Pagination, IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+
 
 @Injectable()
 export class UsersService {
@@ -50,9 +52,14 @@ export class UsersService {
     return await bcrypt.hash(password, saltRounds);
   }
 
-  async findAll() {
-    const users = await this.userRepository.find();
-    return plainToInstance( User, users)
+  async paginate(options: IPaginationOptions): Promise<Pagination<User>> {
+    const paginte = await paginate<User>(this.userRepository, options);
+    const items = plainToInstance(User, paginte.items);
+
+    return {
+      ...paginte,
+      items,
+    };
   }
 
   findOne(id: string) {
@@ -70,6 +77,11 @@ export class UsersService {
   }
 
   async remove(id: string) { 
-    await this.userRepository.delete(id);
+    try {
+      await this.userRepository.delete(id);
+
+    } catch ( error ) {
+      
+    }
   }
 }

@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+
 
 @Controller('users')
 export class UsersController {
@@ -13,8 +15,15 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const options: IPaginationOptions = {
+      page,
+      limit,
+    };
+    return this.usersService.paginate(options);
   }
 
   @Get(':id')

@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+
+
 
 @Controller('companies')
 export class CompaniesController {
@@ -13,8 +16,15 @@ export class CompaniesController {
   }
 
   @Get()
-  findAll() {
-    return this.companiesService.findAll();
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const options: IPaginationOptions = {
+      page,
+      limit,
+    };
+    return this.companiesService.paginate(options);
   }
 
   @Get(':id')
