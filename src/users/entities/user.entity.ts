@@ -1,5 +1,6 @@
 import { Column, PrimaryColumn, Entity, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
 import { IdGeneratorService } from '../../id-generator/id-generator.service';
+import { Exclude } from 'class-transformer';
 import { Company } from '../../companies/entities/company.entity';
 import { BeforeInsert } from 'typeorm';
 
@@ -9,9 +10,10 @@ export class User {
   @PrimaryColumn()
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string; 
 
+  @Exclude()
   @Column()
   password: string; 
 

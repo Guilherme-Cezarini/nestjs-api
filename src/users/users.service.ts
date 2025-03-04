@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Company } from '../companies/entities/company.entity';
 import * as bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -22,12 +23,26 @@ export class UsersService {
       throw new BadRequestException('Company not found');
     }
     const hashedPassword = await this.hashPassword(createUserDto.password);
+    
     const newUser = this.userRepository.create({
       ...createUserDto, 
       password: hashedPassword,
     });
-    newUser.company = company;
-    return this.userRepository.save(newUser);
+
+    try {
+      
+      newUser.company = company;
+      const user = await this.userRepository.save(newUser);
+      return plainToInstance( User, user)
+    } catch(error) {
+    
+      if (error.code == '23505') {
+        
+        throw new BadRequestException('Email already exists');
+        
+      }
+      throw error;
+    }
   }
 
   private async hashPassword(password: string): Promise<string> {
@@ -35,8 +50,9 @@ export class UsersService {
     return await bcrypt.hash(password, saltRounds);
   }
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll() {
+    const users = await this.userRepository.find();
+    return plainToInstance( User, users)
   }
 
   findOne(id: string) {
