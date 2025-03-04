@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -30,7 +30,13 @@ export class CompaniesService {
     return this.companyRepository.findOne({ where: { id } }); 
   }
 
-  remove(id: string) {
-    return this.companyRepository.delete(id);
+  async remove(id: string) {
+    try { 
+      await this.companyRepository.delete(id);
+    } catch (error) {
+      if (error.code == '23503') {
+        throw new BadRequestException('This company cannot be removed');
+      }
+    }
   }
 }
