@@ -32,7 +32,7 @@ export class RabbitMQService {
     });
 
     for await (const line of rl) {
-      const message = this.generateMessage(line, campaign.id, campaign.company_id, campaign.updated_at, campaign.updated_at);
+      const message = this.generateMessage(line, campaign.company_id, campaign.id, campaign.updated_at, campaign.updated_at);
       await this.sendToQueue(queueName, message);
     }
 
