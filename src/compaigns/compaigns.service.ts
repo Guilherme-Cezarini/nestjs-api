@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { CreateCompaignDto } from './dto/create-compaign.dto';
 import { UpdateCompaignDto } from './dto/update-compaign.dto';
 import { Compaign } from './entities/compaign.entity';
@@ -25,6 +25,10 @@ export class CompaignsService {
     file: Express.Multer.File,
     request: Request
   ) {
+    if(!file) {
+      throw new BadRequestException('file is required');
+    }
+    
     const userId = request.user!['sub'];
     const user = await this.userRepository.findOne({ where: { id: userId }});
     
@@ -34,6 +38,7 @@ export class CompaignsService {
     });
     const campaign = await this.campaignRepository.save(newCampaign);
     const filePath = file.path;
+  
     await this.rabbitMQService.processFileAndSendToQueue(filePath, process.env.RABBITMQ_QUEUE || "", campaign);
     return campaign;
   }
