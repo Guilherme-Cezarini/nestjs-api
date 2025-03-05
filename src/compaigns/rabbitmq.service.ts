@@ -32,7 +32,7 @@ export class RabbitMQService {
     });
 
     for await (const line of rl) {
-      const message = this.generateMessage(line, campaign.id, campaign.company_id);
+      const message = this.generateMessage(line, campaign.id, campaign.company_id, campaign.updated_at, campaign.updated_at);
       await this.sendToQueue(queueName, message);
     }
 
@@ -42,8 +42,10 @@ export class RabbitMQService {
     phoneNumber: string,
     companyId: string,
     campaignId: string,
+    updated_at: Date,
+    created_at: Date
   ): Message {
-    return new Message(phoneNumber, "this is a test message", companyId, campaignId);
+    return new Message(phoneNumber, "this is a test message", companyId, campaignId, created_at, updated_at);
   }
 
   async close() {
