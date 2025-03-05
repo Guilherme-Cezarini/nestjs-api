@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete , UseGuards, UploadedFile, UseInterceptors, Req, Query} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete , UseGuards, UploadedFile, UseInterceptors, Req, Query, BadRequestException} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CompaignsService } from './compaigns.service';
 import { CreateCompaignDto } from './dto/create-compaign.dto';
@@ -29,13 +29,6 @@ export class CompaignsController {
         return callback(null, `${randomName}${extname(file.originalname)}`);
       },
     }),
-    fileFilter: (req, file, callback) => {
-    
-      if (!file.originalname.match(/\.(txt)$/)) {
-        return callback(new Error('Only txt files are allowed!'), false);
-      }
-      callback(null, true);
-    },
     limits: {
       fileSize: 10 * 1024 * 1024, // 10 MB
     },

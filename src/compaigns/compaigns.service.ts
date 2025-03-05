@@ -28,6 +28,10 @@ export class CompaignsService {
     if(!file) {
       throw new BadRequestException('file is required');
     }
+
+    if (!file.originalname.match(/\.(txt)$/)) {
+      throw new BadRequestException('only .txt are allowed');
+    }
     
     const userId = request.user!['sub'];
     const user = await this.userRepository.findOne({ where: { id: userId }});
