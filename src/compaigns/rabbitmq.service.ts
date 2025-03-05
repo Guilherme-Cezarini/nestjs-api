@@ -1,11 +1,9 @@
-// src/rabbitmq.service.ts
 import { Injectable } from '@nestjs/common';
 import * as amqp from 'amqplib';
 import * as fs from 'fs';
 import * as readline from 'readline';
 import { Message } from './types/message.type';
 import { Compaign } from './entities/compaign.entity';
-
 
 @Injectable()
 export class RabbitMQService {
@@ -34,11 +32,10 @@ export class RabbitMQService {
     });
 
     for await (const line of rl) {
-        const message = this.generateMessage(line, campaign.id, campaign.company_id)
-        await this.sendToQueue(queueName, message);
+      const message = this.generateMessage(line, campaign.id, campaign.company_id);
+      await this.sendToQueue(queueName, message);
     }
 
-    await this.close(); 
   }
 
   generateMessage(
@@ -56,5 +53,9 @@ export class RabbitMQService {
     if (this.connection) {
       await this.connection.close();
     }
+  }
+
+  async onModuleDestroy() {
+    await this.close();
   }
 }
